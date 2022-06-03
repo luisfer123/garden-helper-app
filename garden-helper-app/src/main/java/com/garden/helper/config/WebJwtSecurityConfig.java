@@ -1,4 +1,4 @@
-package com.garden.helper;
+package com.garden.helper.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -62,6 +62,7 @@ public class WebJwtSecurityConfig {
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 				.authorizeRequests()
 				.antMatchers("/api/v1/auth/**").permitAll()
+				.antMatchers("/api/v1/users/**").permitAll()
 				.anyRequest().authenticated();
 		
 		http.addFilterBefore(

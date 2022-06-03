@@ -19,6 +19,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "User")
 public class User {
@@ -31,6 +33,7 @@ public class User {
 	@Column(name = "username", unique = true)
 	private String username;
 	
+	@JsonIgnore
 	@Column(name = "password")
 	private String password;
 	
@@ -54,6 +57,7 @@ public class User {
 	@Column(name = "profile_picture", columnDefinition = "MEDIUMBLOB")
 	private byte[] profilePicture;
 	
+	@JsonIgnore
 	@ManyToMany(fetch = FetchType.EAGER,
 			cascade = CascadeType.PERSIST)
 	@JoinTable(name = "User_has_Authority",
