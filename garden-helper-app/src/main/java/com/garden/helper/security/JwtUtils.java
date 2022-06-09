@@ -2,6 +2,8 @@ package com.garden.helper.security;
 
 import java.util.Date;
 
+import javax.servlet.http.Cookie;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -69,6 +71,16 @@ public class JwtUtils {
 			logger.error("JWT claims string is empty: {}", e.getMessage());
 		}
 		return false;
+	}
+	
+	public Cookie createJwtCookie(int maxAge, String jwt) {
+		Cookie cookie = new Cookie("jwt-token", jwt);
+		cookie.setPath("/api");
+		cookie.setHttpOnly(true);
+		cookie.setMaxAge(maxAge);
+		// TODO: When in production must do cookie.setSecure(true);
+		
+		return cookie;
 	}
 
 }

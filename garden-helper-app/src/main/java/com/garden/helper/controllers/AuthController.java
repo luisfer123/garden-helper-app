@@ -41,6 +41,9 @@ import com.garden.helper.security.UserDetailsImpl;
 @RequestMapping(path = "/api/v1/auth")
 public class AuthController {
 	
+	// recommended value 1800
+	private static final int COOKIE_MAX_AGE = 1800;
+	
 	@Autowired
 	private AuthenticationManager authenticationManager;
 	
@@ -70,11 +73,7 @@ public class AuthController {
 		
 		String jwt = jwtUtils.generateJwtToken(authentication);
 		
-		Cookie cookie = new Cookie("jwt-token", jwt);
-		cookie.setPath("/api");
-		cookie.setHttpOnly(true);
-		cookie.setMaxAge(1800);
-		// TODO: when in production must do cookie.setSecure(true);
+		Cookie cookie = jwtUtils.createJwtCookie(COOKIE_MAX_AGE, jwt);
 		response.addCookie(cookie);
 		
 		UserDetailsImpl userDetails = 
@@ -144,13 +143,9 @@ public class AuthController {
 	
 	@GetMapping(path = "/logout")
 	public ResponseEntity<MessageResponse> logout(HttpServletResponse response) {
-		Cookie cookie = new Cookie("jwt-token", null);
-		cookie.setPath("/api");
-		cookie.setHttpOnly(true);
-		cookie.setMaxAge(0);
-		// TODO: When in production must do cookie.setSecure(true);
-		response.addCookie(cookie);
 		
+		Cookie cookie = jwtUtils.createJwtCookie(0, null);
+		response.addCookie(cookie);
 		SecurityContextHolder.getContext().setAuthentication(null);
 		
 		return ResponseEntity.ok(new MessageResponse("User logged out successfully!"));

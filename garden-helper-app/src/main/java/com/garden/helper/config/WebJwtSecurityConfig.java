@@ -62,7 +62,7 @@ public class WebJwtSecurityConfig {
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 				.authorizeRequests()
 				.antMatchers("/api/v1/auth/**").permitAll()
-				.antMatchers("/api/v1/users/**").permitAll()
+				.antMatchers("/api/v1/users/**").authenticated()
 				.anyRequest().authenticated();
 		
 		http.addFilterBefore(
