@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -56,6 +57,12 @@ public class User {
 	@Basic(fetch = FetchType.EAGER)
 	@Column(name = "profile_picture", columnDefinition = "MEDIUMBLOB")
 	private byte[] profilePicture;
+	
+	@OneToMany(
+			mappedBy = "user",
+			cascade = CascadeType.ALL,
+			orphanRemoval = true)
+	private Set<Plant> plants = new HashSet<>();
 	
 	@JsonIgnore
 	@ManyToMany(fetch = FetchType.EAGER,
@@ -164,6 +171,14 @@ public class User {
 
 	public void setAuthorities(Set<Authority> authorities) {
 		this.authorities = authorities;
+	}
+
+	public Set<Plant> getPlants() {
+		return plants;
+	}
+
+	public void setPlants(Set<Plant> plants) {
+		this.plants = plants;
 	}
 
 	@Override
