@@ -27,7 +27,7 @@ public class Authority {
 	private Long id;
 	
 	@Enumerated(EnumType.STRING)
-	@Column(name = "name", columnDefinition = "ENUM('ROLE_USER', 'ROLE_ADMIN')")
+	@Column(name = "name", columnDefinition = "ENUM('ROLE_USER', 'ROLE_ADMIN', 'ROLE_MODERATOR')")
 	private EAuthority name;
 	
 	@ManyToMany(mappedBy = "authorities")

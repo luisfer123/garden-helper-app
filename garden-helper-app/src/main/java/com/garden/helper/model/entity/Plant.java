@@ -1,5 +1,6 @@
 package com.garden.helper.model.entity;
 
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -31,6 +33,16 @@ public class Plant {
 	
 	@Column(name = "name")
 	private String name;
+	
+	@Column(name = "creation_date")
+	private Timestamp creationDate;
+	
+	@Column(name = "last_updated")
+	private Timestamp lastUpdated;
+	
+	@Lob
+	@Column(name = "thumbnail_image", columnDefinition = "MEDIUMBLOB")
+	private byte[] thumbnailImage;
 	
 	@OneToMany(
 			mappedBy = "plant",
@@ -72,6 +84,22 @@ public class Plant {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public Timestamp getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(Timestamp creationDate) {
+		this.creationDate = creationDate;
+	}
+
+	public byte[] getThumbnailImage() {
+		return thumbnailImage;
+	}
+
+	public void setThumbnailImage(byte[] thumbnailImage) {
+		this.thumbnailImage = thumbnailImage;
 	}
 
 	@Override

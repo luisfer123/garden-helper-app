@@ -37,7 +37,7 @@ public class UserRestController {
 	@GetMapping(path = "/{id}")
 	public EntityModel<User> getUser(@PathVariable("id") Long userId) 
 			throws UserNotFoundException {
-
+		System.out.println("Executed");
 		User user = userService.findById(userId);
 		
 		return EntityModel.of(user);

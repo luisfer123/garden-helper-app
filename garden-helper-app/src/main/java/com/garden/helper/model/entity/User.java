@@ -58,6 +58,7 @@ public class User {
 	@Column(name = "profile_picture", columnDefinition = "MEDIUMBLOB")
 	private byte[] profilePicture;
 	
+	@JsonIgnore
 	@OneToMany(
 			mappedBy = "user",
 			cascade = CascadeType.ALL,
@@ -83,6 +84,19 @@ public class User {
 		this.email = email;
 	}
 
+	public User(String username, String password, String email, 
+			String firstName, String middleName, String lastName,
+			String secondLastName) {
+		super();
+		this.username = username;
+		this.password = password;
+		this.email = email;
+		this.firstName = firstName;
+		this.middleName = middleName;
+		this.lastName = lastName;
+		this.secondLastName = secondLastName;
+	}
+
 	public void addAuthority(Authority auth) {
 		this.authorities.add(auth);
 		auth.getUsers().add(this);
@@ -91,6 +105,16 @@ public class User {
 	public void removeAuthority(Authority auth) {
 		this.authorities.remove(auth);
 		auth.getUsers().remove(this);
+	}
+	
+	public void addPlant(Plant plant) {
+		this.plants.add(plant);
+		plant.setUser(this);
+	}
+	
+	public void removePlant(Plant plant) {
+		this.plants.remove(plant);
+		plant.setUser(null);
 	}
 
 	public Long getId() {

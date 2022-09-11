@@ -18,11 +18,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.garden.helper.model.entity.Authority;
 import com.garden.helper.model.entity.User;
@@ -37,7 +37,7 @@ import com.garden.helper.repositories.UserRepository;
 import com.garden.helper.security.JwtUtils;
 import com.garden.helper.security.UserDetailsImpl;
 
-@Controller
+@RestController
 @RequestMapping(path = "/api/v1/auth")
 public class AuthController {
 	
