@@ -24,14 +24,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.garden.helper.model.entity.Authority;
-import com.garden.helper.model.entity.User;
-import com.garden.helper.model.enums.EAuthority;
-import com.garden.helper.model.payloads.MessageResponse;
-import com.garden.helper.model.payloads.security.IsAuthenticatedResponse;
-import com.garden.helper.model.payloads.security.LoginRequest;
-import com.garden.helper.model.payloads.security.LoginResponse;
-import com.garden.helper.model.payloads.security.SignupRequest;
+import com.garden.helper.data.entities.Authority;
+import com.garden.helper.data.entities.User;
+import com.garden.helper.data.enums.EAuthority;
+import com.garden.helper.data.payloads.MessageResponse;
+import com.garden.helper.data.payloads.security.IsAuthenticatedResponse;
+import com.garden.helper.data.payloads.security.LoginRequest;
+import com.garden.helper.data.payloads.security.LoginResponse;
+import com.garden.helper.data.payloads.security.SignupRequest;
 import com.garden.helper.repositories.AuthorityRepository;
 import com.garden.helper.repositories.UserRepository;
 import com.garden.helper.security.JwtUtils;
@@ -73,7 +73,7 @@ public class AuthController {
 		
 		String jwt = jwtUtils.generateJwtToken(authentication);
 		
-		Cookie cookie = jwtUtils.createJwtCookie(COOKIE_MAX_AGE, jwt);
+		Cookie cookie = JwtUtils.createJwtCookie(COOKIE_MAX_AGE, jwt);
 		response.addCookie(cookie);
 		
 		UserDetailsImpl userDetails = 
@@ -144,7 +144,7 @@ public class AuthController {
 	@GetMapping(path = "/logout")
 	public ResponseEntity<MessageResponse> logout(HttpServletResponse response) {
 		
-		Cookie cookie = jwtUtils.createJwtCookie(0, null);
+		Cookie cookie = JwtUtils.createJwtCookie(0, null);
 		response.addCookie(cookie);
 		SecurityContextHolder.getContext().setAuthentication(null);
 		

@@ -10,13 +10,14 @@ import java.nio.file.Paths;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
 import com.garden.helper.controllers.BonsaiRestController;
-import com.garden.helper.model.entity.Bonsai;
-import com.garden.helper.model.models.BonsaiModel;
-import com.garden.helper.services.PlantService;
+import com.garden.helper.data.entities.Bonsai;
+import com.garden.helper.data.models.BonsaiModel;
+import com.garden.helper.helpers.ImageHelper;
 
 @Component
 public class BonsaiModelAssembler extends RepresentationModelAssemblerSupport<Bonsai, BonsaiModel> {
@@ -24,11 +25,12 @@ public class BonsaiModelAssembler extends RepresentationModelAssemblerSupport<Bo
 	@Autowired
 	private ResourceLoader resourceLoader;
 	
-	@Autowired
-	private PlantService plantService;
-	
 	public BonsaiModelAssembler() {
-		super(BonsaiRestController.class, BonsaiModel.class);
+		this(BonsaiRestController.class, BonsaiModel.class);
+	}
+
+	public BonsaiModelAssembler(Class<?> controllerClass, Class<BonsaiModel> resourceType) {
+		super(controllerClass, resourceType);
 	}
 
 	@Override
@@ -42,12 +44,11 @@ public class BonsaiModelAssembler extends RepresentationModelAssemblerSupport<Bo
 		        .getBonsaiById(bonsai.getId()))
 		        .withSelfRel());
 		
-		// Creating a String representation of the thumbnailImage in Bonsai
+		// try to get the image from the entity
 		if(bonsai.getThumbnailImage() != null 
 				&& bonsai.getThumbnailImage().length >= 0) {
-			
-			// Decompress and encode into string the thumbnailImage 
-			image =	plantService.decompressBytes(bonsai.getThumbnailImage());
+			// Decompress thumbnailImage 
+			image =	ImageHelper.decompressBytes(bonsai.getThumbnailImage());
 			
 		} else {
 			// If there is not thumbnailImage we add the default one
@@ -66,9 +67,20 @@ public class BonsaiModelAssembler extends RepresentationModelAssemblerSupport<Bo
 		bonsaiModel.setBonsaiStyle(bonsai.getStyle());
 		bonsaiModel.setBonsaiType(bonsai.getType());
 		bonsaiModel.setThumbnailImage(image);
+		bonsaiModel.setLastUpdatedAt(bonsai.getLastUpdatedAt());
 		
 		return bonsaiModel;
 		
+	}
+	
+	@Override
+	public CollectionModel<BonsaiModel> toCollectionModel(
+			Iterable<? extends Bonsai> bonsais) {
+		
+		CollectionModel<BonsaiModel> bonsaiModels =
+				super.toCollectionModel(bonsais);
+
+		return bonsaiModels;
 	}
 
 }

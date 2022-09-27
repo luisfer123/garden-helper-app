@@ -9,9 +9,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
-import com.garden.helper.model.entity.Authority;
-import com.garden.helper.model.entity.User;
-import com.garden.helper.model.enums.EAuthority;
+import com.garden.helper.data.entities.Authority;
+import com.garden.helper.data.entities.User;
+import com.garden.helper.data.enums.EAuthority;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)

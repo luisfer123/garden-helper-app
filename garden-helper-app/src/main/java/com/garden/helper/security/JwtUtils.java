@@ -73,7 +73,7 @@ public class JwtUtils {
 		return false;
 	}
 	
-	public Cookie createJwtCookie(int maxAge, String jwt) {
+	public static Cookie createJwtCookie(int maxAge, String jwt) {
 		Cookie cookie = new Cookie("jwt-token", jwt);
 		cookie.setPath("/api");
 		cookie.setHttpOnly(true);

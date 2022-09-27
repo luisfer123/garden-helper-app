@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.garden.helper.model.entity.Authority;
-import com.garden.helper.model.enums.EAuthority;
+import com.garden.helper.data.entities.Authority;
+import com.garden.helper.data.enums.EAuthority;
 
 public interface AuthorityRepository extends JpaRepository<Authority, Long> {
 	

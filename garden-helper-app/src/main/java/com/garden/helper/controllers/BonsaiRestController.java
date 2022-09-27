@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.garden.helper.assemblers.BonsaiModelAssembler;
-import com.garden.helper.model.entity.Bonsai;
-import com.garden.helper.model.models.BonsaiModel;
+import com.garden.helper.data.entities.Bonsai;
+import com.garden.helper.data.models.BonsaiModel;
 import com.garden.helper.services.BonsaiService;
 
 @Controller

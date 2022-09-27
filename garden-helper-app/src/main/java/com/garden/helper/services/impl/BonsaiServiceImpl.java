@@ -12,9 +12,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.garden.helper.data.entities.Bonsai;
+import com.garden.helper.data.entities.User;
 import com.garden.helper.exceptions.SecurityPrincipalInvalidException;
-import com.garden.helper.model.entity.Bonsai;
-import com.garden.helper.model.entity.User;
 import com.garden.helper.repositories.BonsaiRepository;
 import com.garden.helper.repositories.UserRepository;
 import com.garden.helper.security.SecurityHelper;
@@ -66,11 +66,12 @@ public class BonsaiServiceImpl implements BonsaiService {
 			throws IllegalArgumentException, SecurityPrincipalInvalidException {
 		
 		newBonsai.setCreationDate(new Timestamp(System.currentTimeMillis()));
+		newBonsai.setLastUpdatedAt(new Timestamp(System.currentTimeMillis()));
 		
 		User user = userRepo.findById(SecurityHelper.getPrincipalId())
 				.orElseThrow(() -> new SecurityPrincipalInvalidException("Principas object does not have a valid User Id"));
 		user.addPlant(newBonsai);
-		
+				
 		return bonsaiRepo.save(newBonsai);
 		
 	}

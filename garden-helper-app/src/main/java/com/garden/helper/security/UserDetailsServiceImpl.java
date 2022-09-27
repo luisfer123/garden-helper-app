@@ -5,7 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.garden.helper.model.entity.User;
+import com.garden.helper.data.entities.User;
 import com.garden.helper.services.UserService;
 
 public class UserDetailsServiceImpl implements UserDetailsService {

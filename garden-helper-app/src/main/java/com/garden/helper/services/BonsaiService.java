@@ -4,8 +4,8 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 
+import com.garden.helper.data.entities.Bonsai;
 import com.garden.helper.exceptions.SecurityPrincipalInvalidException;
-import com.garden.helper.model.entity.Bonsai;
 
 public interface BonsaiService {
 	

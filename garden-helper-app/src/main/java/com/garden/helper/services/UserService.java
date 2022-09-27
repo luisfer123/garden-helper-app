@@ -1,18 +1,25 @@
 package com.garden.helper.services;
 
+import java.util.List;
+
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import com.garden.helper.data.entities.User;
+import com.garden.helper.data.payloads.user.UpdateUsernameEmail;
+import com.garden.helper.data.payloads.user.UpdateUserPassword;
+import com.garden.helper.data.payloads.user.UpdateUserPersonalInfo;
 import com.garden.helper.exceptions.UserNotFoundException;
-import com.garden.helper.model.entity.User;
-import com.garden.helper.model.payloads.user.UpdateUserInfo;
-import com.garden.helper.model.payloads.user.UpdateUserPassword;
-import com.garden.helper.model.payloads.user.UpdateUserPersonalInfo;
 
 public interface UserService {
 	
 	User findByUsernameWithAuthorities(String username)	throws UsernameNotFoundException;
 	
 	User findById(Long id) throws UserNotFoundException;
+	
+	List<User> findAll();
+	
+	Page<User> findPage(int pageNum, int pageSize, String sortBy);
 	
 	/**
 	 * Updates the {@code username} and/or {@code email} of a given {@linkplain User}. <br>
@@ -27,7 +34,7 @@ public interface UserService {
 	 * @param userId
 	 * @throws UserNotFoundException
 	 */
-	void updateUserInfo(UpdateUserInfo updatedData, Long userId) throws UserNotFoundException;
+	void updateUserInfo(UpdateUsernameEmail updatedData, Long userId) throws UserNotFoundException;
 	
 	void updateUserPassword(UpdateUserPassword updatedData, Long userId) throws UserNotFoundException;
 	

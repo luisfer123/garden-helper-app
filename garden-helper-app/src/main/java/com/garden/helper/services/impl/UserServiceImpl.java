@@ -1,20 +1,25 @@
 package com.garden.helper.services.impl;
 
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.garden.helper.data.entities.Authority;
+import com.garden.helper.data.entities.User;
+import com.garden.helper.data.payloads.user.UpdateUsernameEmail;
+import com.garden.helper.data.payloads.user.UpdateUserPassword;
+import com.garden.helper.data.payloads.user.UpdateUserPersonalInfo;
 import com.garden.helper.exceptions.UserNotFoundException;
-import com.garden.helper.model.entity.Authority;
-import com.garden.helper.model.entity.User;
-import com.garden.helper.model.payloads.user.UpdateUserInfo;
-import com.garden.helper.model.payloads.user.UpdateUserPassword;
-import com.garden.helper.model.payloads.user.UpdateUserPersonalInfo;
 import com.garden.helper.repositories.AuthorityRepository;
 import com.garden.helper.repositories.UserRepository;
 import com.garden.helper.services.UserService;
@@ -52,7 +57,25 @@ public class UserServiceImpl implements UserService {
 	@PreAuthorize(value = "hasRole('ADMIN') or principal.id == #userId")
 	public User findById(Long userId) throws UserNotFoundException {
 		return userRepo.findById(userId)
-				.orElseThrow(() -> new UserNotFoundException("User with id: " + userId + " does not exist."));
+				.orElseThrow(() -> new UserNotFoundException("User with id " + userId + " does not exist."));
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	@PreAuthorize(value = "hasRole('ADMIN')")
+	public List<User> findAll() {
+		return userRepo.findAll();
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	@PreAuthorize(value = "hasRole('ADMIN')")
+	public Page<User> findPage(int pageNum, int pageSize, String sortBy) {
+		
+		Pageable paging = 
+				PageRequest.of(pageNum, pageSize, Sort.by(sortBy));
+		
+		return userRepo.findAll(paging);
 	}
 	
 	/**
@@ -61,7 +84,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional
 	@PreAuthorize(value = "hasRole('ADMIN') or principal.id == #userId")
-	public void updateUserInfo(UpdateUserInfo updatedData, Long userId) 
+	public void updateUserInfo(UpdateUsernameEmail updatedData, Long userId) 
 			throws UserNotFoundException {
 		
 		User user = this.findById(userId);

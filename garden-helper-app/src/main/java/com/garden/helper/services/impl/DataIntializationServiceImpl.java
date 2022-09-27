@@ -10,15 +10,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.garden.helper.data.entities.Authority;
+import com.garden.helper.data.entities.Bonsai;
+import com.garden.helper.data.entities.User;
+import com.garden.helper.data.enums.EAuthority;
+import com.garden.helper.data.enums.EBonsaiStyle;
+import com.garden.helper.data.enums.EBonsaiType;
 import com.garden.helper.exceptions.UserNotFoundException;
-import com.garden.helper.model.entity.Authority;
-import com.garden.helper.model.entity.Bonsai;
-import com.garden.helper.model.entity.Bonsai;
-import com.garden.helper.model.entity.Bonsai;
-import com.garden.helper.model.entity.User;
-import com.garden.helper.model.enums.EAuthority;
-import com.garden.helper.model.enums.EBonsaiStyle;
-import com.garden.helper.model.enums.EBonsaiType;
 import com.garden.helper.repositories.AuthorityRepository;
 import com.garden.helper.repositories.BonsaiRepository;
 import com.garden.helper.repositories.UserRepository;
@@ -134,6 +132,7 @@ public class DataIntializationServiceImpl {
 			userBonsai1.setCreationDate(new Timestamp(System.currentTimeMillis()));
 			userBonsai1.setType(EBonsaiType.BONSAI);
 			userBonsai1.setStyle(EBonsaiStyle.MOYOGI);
+			userBonsai1.setLastUpdatedAt(new Timestamp(System.currentTimeMillis()));
 			user.addPlant(userBonsai1);
 			
 			Bonsai userBonsai2 = new Bonsai();
@@ -141,6 +140,7 @@ public class DataIntializationServiceImpl {
 			userBonsai2.setCreationDate(new Timestamp(System.currentTimeMillis()-1200));
 			userBonsai2.setType(EBonsaiType.PRE_BONSAI);
 			userBonsai2.setStyle(EBonsaiStyle.SHAKAN);
+			userBonsai2.setLastUpdatedAt(new Timestamp(System.currentTimeMillis()));
 			user.addPlant(userBonsai2);
 			
 			Bonsai userBonsai3 = new Bonsai();
@@ -148,6 +148,7 @@ public class DataIntializationServiceImpl {
 			userBonsai3.setCreationDate(new Timestamp(System.currentTimeMillis()-3200));
 			userBonsai3.setType(EBonsaiType.BONSAI);
 			userBonsai3.setStyle(EBonsaiStyle.CHOKAN);
+			userBonsai3.setLastUpdatedAt(new Timestamp(System.currentTimeMillis()));
 			user.addPlant(userBonsai3);
 			
 			// Moderator Bonsais
@@ -157,6 +158,7 @@ public class DataIntializationServiceImpl {
 			modeBonsai1.setCreationDate(new Timestamp(System.currentTimeMillis()));
 			modeBonsai1.setType(EBonsaiType.PRE_BONSAI);
 			modeBonsai1.setStyle(EBonsaiStyle.MOYOGI);
+			modeBonsai1.setLastUpdatedAt(new Timestamp(System.currentTimeMillis()));
 			mode.addPlant(modeBonsai1);
 			
 			Bonsai modeBonsai2 = new Bonsai();
@@ -164,6 +166,7 @@ public class DataIntializationServiceImpl {
 			modeBonsai2.setCreationDate(new Timestamp(System.currentTimeMillis()-1200));
 			modeBonsai2.setType(EBonsaiType.BONSAI);
 			modeBonsai2.setStyle(EBonsaiStyle.SHAKAN);
+			modeBonsai2.setLastUpdatedAt(new Timestamp(System.currentTimeMillis()));
 			mode.addPlant(modeBonsai2);
 			
 			Bonsai modeBonsai3 = new Bonsai();
@@ -171,6 +174,7 @@ public class DataIntializationServiceImpl {
 			modeBonsai3.setCreationDate(new Timestamp(System.currentTimeMillis()-3200));
 			modeBonsai3.setType(EBonsaiType.PRE_BONSAI);
 			modeBonsai3.setStyle(EBonsaiStyle.CHOKAN);
+			modeBonsai3.setLastUpdatedAt(new Timestamp(System.currentTimeMillis()));
 			mode.addPlant(modeBonsai3);
 			
 			// Admin Bonsais
@@ -180,6 +184,7 @@ public class DataIntializationServiceImpl {
 			adminBonsai1.setCreationDate(new Timestamp(System.currentTimeMillis()));
 			adminBonsai1.setType(EBonsaiType.PRE_BONSAI);
 			adminBonsai1.setStyle(EBonsaiStyle.MOYOGI);
+			adminBonsai1.setLastUpdatedAt(new Timestamp(System.currentTimeMillis()));
 			admin.addPlant(adminBonsai1);
 			
 			Bonsai adminBonsai2 = new Bonsai();
@@ -187,6 +192,7 @@ public class DataIntializationServiceImpl {
 			adminBonsai2.setCreationDate(new Timestamp(System.currentTimeMillis()-1200));
 			adminBonsai2.setType(EBonsaiType.BONSAI);
 			adminBonsai2.setStyle(EBonsaiStyle.SHAKAN);
+			adminBonsai2.setLastUpdatedAt(new Timestamp(System.currentTimeMillis()));
 			admin.addPlant(adminBonsai2);
 			
 			Bonsai adminBonsai3 = new Bonsai();
@@ -194,6 +200,7 @@ public class DataIntializationServiceImpl {
 			adminBonsai3.setCreationDate(new Timestamp(System.currentTimeMillis()-3200));
 			adminBonsai3.setType(EBonsaiType.BONSAI);
 			adminBonsai3.setStyle(EBonsaiStyle.CHOKAN);
+			adminBonsai3.setLastUpdatedAt(new Timestamp(System.currentTimeMillis()));
 			admin.addPlant(adminBonsai3);
 			
 			bonsaiRepo.saveAll(Arrays.asList(

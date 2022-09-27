@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.garden.helper.model.entity.Bonsai;
+import com.garden.helper.data.entities.Bonsai;
 
 public interface BonsaiRepository extends JpaRepository<Bonsai, Long> {
 	
