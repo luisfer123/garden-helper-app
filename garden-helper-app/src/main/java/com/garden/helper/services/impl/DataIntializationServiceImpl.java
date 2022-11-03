@@ -1,17 +1,26 @@
 package com.garden.helper.services.impl;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.garden.helper.data.entities.Authority;
 import com.garden.helper.data.entities.Bonsai;
+import com.garden.helper.data.entities.Plant;
+import com.garden.helper.data.entities.RepottingImage;
+import com.garden.helper.data.entities.RepottingInfo;
 import com.garden.helper.data.entities.User;
 import com.garden.helper.data.enums.EAuthority;
 import com.garden.helper.data.enums.EBonsaiStyle;
@@ -19,6 +28,9 @@ import com.garden.helper.data.enums.EBonsaiType;
 import com.garden.helper.exceptions.UserNotFoundException;
 import com.garden.helper.repositories.AuthorityRepository;
 import com.garden.helper.repositories.BonsaiRepository;
+import com.garden.helper.repositories.PlantRepository;
+import com.garden.helper.repositories.RepottingImageRepository;
+import com.garden.helper.repositories.RepottingInfoRepository;
 import com.garden.helper.repositories.UserRepository;
 
 @Service
@@ -36,6 +48,18 @@ public class DataIntializationServiceImpl {
 	@Autowired
 	private PasswordEncoder encoder;
 	
+	@Autowired
+	private ResourceLoader resourceLoader;
+	
+	@Autowired
+	private PlantRepository plantRepo;
+	
+	@Autowired
+	private RepottingInfoRepository repottingInfoRepo;
+	
+	@Autowired
+	private RepottingImageRepository repottingImageRepo;
+	
 	@Transactional
 	@EventListener(classes = ApplicationReadyEvent.class)
 	public void onInit() {
@@ -43,6 +67,7 @@ public class DataIntializationServiceImpl {
 		this.addAuthorities();
 		this.addUsers();
 		this.addBonsais();
+		this.addRepottingInfo();
 		
 	}
 	
@@ -207,6 +232,69 @@ public class DataIntializationServiceImpl {
 					userBonsai1, userBonsai2, userBonsai3,
 					modeBonsai1, modeBonsai2, modeBonsai3,
 					adminBonsai1, adminBonsai2, adminBonsai3));
+		}
+		
+	}
+	
+	@Transactional
+	public void addRepottingInfo() {
+		
+		if(repottingInfoRepo.count() == 0) {
+		
+			User admin = userRepo.findByUsername("admin").get();
+			User moderator = userRepo.findByUsername("moderator").get();
+			User user = userRepo.findByUsername("user").get();
+			
+			List<Plant> adminPlants = plantRepo.findByUserId(admin.getId());
+			List<Plant> moderatorPlants = plantRepo.findByUserId(moderator.getId());
+			List<Plant> userPlants = plantRepo.findByUserId(user.getId());
+			
+			RepottingImage repottingImage = new RepottingImage();
+			byte[] image = null;
+			
+			try {
+				Resource imageResource = 
+						resourceLoader.getResource("classpath:static/images/no-thumbnail-picture-bonsai.jpg");
+				image = Files.readAllBytes(Paths.get(imageResource.getURI()));
+				
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
+			
+			repottingImage.setCreationDate(new Timestamp(System.currentTimeMillis()));
+			repottingImage.setImage(image);
+			repottingImage.setNote("Some note about repotting image");
+			
+			adminPlants.forEach(plant -> {
+				RepottingInfo info = new RepottingInfo();
+				info.setNextRepottingDate(new Timestamp(System.currentTimeMillis() + 120000));
+				info.addRepottingImage(repottingImage);
+				plant.addRepottingInfo(info);
+				repottingInfoRepo.save(info);
+
+				plantRepo.save(plant);
+			});
+			
+			moderatorPlants.forEach(plant -> {
+				RepottingInfo info = new RepottingInfo();
+				info.setNextRepottingDate(new Timestamp(System.currentTimeMillis() + 120000));
+				info.addRepottingImage(repottingImage);
+				plant.addRepottingInfo(info);
+				repottingInfoRepo.save(info);
+				
+				plantRepo.save(plant);
+			});
+			
+			userPlants.forEach(plant -> {
+				RepottingInfo info = new RepottingInfo();
+				info.setNextRepottingDate(new Timestamp(System.currentTimeMillis() + 120000));
+				info.addRepottingImage(repottingImage);
+				plant.addRepottingInfo(info);
+				repottingInfoRepo.save(info);
+				
+				plantRepo.save(plant);
+			});
+			
 		}
 	}
 

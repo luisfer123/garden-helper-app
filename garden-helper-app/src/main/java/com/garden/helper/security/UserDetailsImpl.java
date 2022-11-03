@@ -10,6 +10,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.garden.helper.data.entities.User;
 
+import lombok.ToString;
+
+@ToString
 public class UserDetailsImpl implements UserDetails {
 
 	/**

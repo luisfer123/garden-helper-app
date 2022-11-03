@@ -1,5 +1,7 @@
 package com.garden.helper.services.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,11 @@ public class PlantServiceImpl implements PlantService {
 	public Plant findById(Long plantId) throws EntityNotFoundException {
 		return plantRepo.findById(plantId)
 				.orElseThrow(() -> new EntityNotFoundException("Entity of type Plant with id: " + plantId + " does not exists."));
+	}
+	
+	@Transactional(readOnly = true)
+	public List<Plant> findAllForGivenUserId(Long userId) {
+		return plantRepo.findByUserId(userId);
 	}
 
 }

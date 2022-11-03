@@ -16,7 +16,9 @@ import org.springframework.stereotype.Component;
 
 import com.garden.helper.controllers.BonsaiRestController;
 import com.garden.helper.data.entities.Bonsai;
+import com.garden.helper.data.entities.RepottingInfo;
 import com.garden.helper.data.models.BonsaiModel;
+import com.garden.helper.data.models.RepottingInfoModel;
 import com.garden.helper.helpers.ImageHelper;
 
 @Component
@@ -67,7 +69,10 @@ public class BonsaiModelAssembler extends RepresentationModelAssemblerSupport<Bo
 		bonsaiModel.setBonsaiStyle(bonsai.getStyle());
 		bonsaiModel.setBonsaiType(bonsai.getType());
 		bonsaiModel.setThumbnailImage(image);
+		bonsaiModel.setCreationDate(bonsai.getCreationDate());
 		bonsaiModel.setLastUpdatedAt(bonsai.getLastUpdatedAt());
+		bonsaiModel.setLatestRepottingInfo(
+				lastRepottingInfoToModel(bonsai.getLatestRepottingInfo()));
 		
 		return bonsaiModel;
 		
@@ -81,6 +86,16 @@ public class BonsaiModelAssembler extends RepresentationModelAssemblerSupport<Bo
 				super.toCollectionModel(bonsais);
 
 		return bonsaiModels;
+	}
+	
+	private RepottingInfoModel lastRepottingInfoToModel(RepottingInfo ri) {
+		
+		return RepottingInfoModel.builder()
+				.id(ri.getId())
+				.repotedAt(ri.getRepotedAt())
+				.nextRepottingDate(ri.getNextRepottingDate())
+				.note(ri.getNote())
+				.build();
 	}
 
 }

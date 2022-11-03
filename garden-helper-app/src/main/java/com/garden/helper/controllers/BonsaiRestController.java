@@ -1,8 +1,9 @@
 package com.garden.helper.controllers;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -16,12 +17,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.garden.helper.assemblers.BonsaiModelAssembler;
 import com.garden.helper.data.entities.Bonsai;
+import com.garden.helper.data.enums.EBonsaiStyle;
+import com.garden.helper.data.enums.EBonsaiType;
 import com.garden.helper.data.models.BonsaiModel;
 import com.garden.helper.services.BonsaiService;
 
 @Controller
 @RequestMapping(path = "/api/v1/plants/bonsais")
 public class BonsaiRestController {
+	
+	private static final Logger log = 
+			LoggerFactory.getLogger(BonsaiRestController.class);
+	
+	// Default values
+	private static final int DEFAULT_PAGE_NUM = 0;
+	private static final int DEFAULT_PAGE_SIZE = 9;
+	private static final String DEFAULT_PAGE_SORT_BY = "creationDate";
 	
 	@Autowired
 	private BonsaiService bonsaiService;
@@ -38,9 +49,9 @@ public class BonsaiRestController {
 			@RequestParam("pageSize") Optional<Integer> optPageSize,
 			@RequestParam("sortBy") Optional<String> optSortBy) {
 		
-		int pageNum = optPageNum.orElse(0);
-		int pageSize = optPageSize.orElse(9);
-		String sortBy = optSortBy.orElse("creationDate");
+		int pageNum = optPageNum.orElse(DEFAULT_PAGE_NUM);
+		int pageSize = optPageSize.orElse(DEFAULT_PAGE_SIZE);
+		String sortBy = optSortBy.orElse(DEFAULT_PAGE_SORT_BY);
 		
 		Page<Bonsai> bonsaisPage = 
 				bonsaiService.findAllForLoggedInUser(pageNum, pageSize, sortBy);
@@ -53,23 +64,14 @@ public class BonsaiRestController {
 	
 	@GetMapping(path = "")
 	public ResponseEntity<PagedModel<BonsaiModel>> getBonsaisPageForGivenUser(
-			@RequestParam("user_id") Optional<Long> optUserId,
-			@RequestParam("pageNum") Optional<Integer> optPageNum,
-			@RequestParam("pageSize") Optional<Integer> optPageSize,
-			@RequestParam("sortBy") Optional<String> optSortBy) {
-		
-		Long userId = null;
-		try {
-			userId = optUserId.get();
-		} catch(NoSuchElementException e) {
-			return ResponseEntity
-					.badRequest()
-					.build();
-		}
+			@RequestParam(name = "user_id", required = true) Long userId,
+			@RequestParam("page_num") Optional<Integer> optPageNum,
+			@RequestParam("page_size") Optional<Integer> optPageSize,
+			@RequestParam("sort_by") Optional<String> optSortBy) {
 				
-		int pageNum = optPageNum.orElse(0);
-		int pageSize = optPageSize.orElse(9);
-		String sortBy = optSortBy.orElse("creationDate");
+		int pageNum = optPageNum.orElse(DEFAULT_PAGE_NUM);
+		int pageSize = optPageSize.orElse(DEFAULT_PAGE_SIZE);
+		String sortBy = optSortBy.orElse(DEFAULT_PAGE_SORT_BY);
 		
 		Page<Bonsai> bonsaisPage = 
 				bonsaiService.findAllForGivenUser(userId, pageNum, pageSize, sortBy);
@@ -80,13 +82,38 @@ public class BonsaiRestController {
 		return ResponseEntity.ok(bonsaiModelPage);
 	}
 	
+	@GetMapping(path = "/filtered")
+	public ResponseEntity<PagedModel<BonsaiModel>> getBonsaisPageFilteredForGivenUser(
+			@RequestParam(name = "user_id", required = true) Long userId,
+			@RequestParam("page_num") Optional<Integer> optPageNum,
+			@RequestParam("page_size") Optional<Integer> optPageSize,
+			@RequestParam("sort_by") Optional<String> optSortBy,
+			@RequestParam("bonsai_style") Optional<EBonsaiStyle> optBonsaiStyle,
+			@RequestParam("bonsai_type") Optional<EBonsaiType> optBonsaiType) {
+		
+		int pageNum = optPageNum.orElse(DEFAULT_PAGE_NUM);
+		int pageSize = optPageSize.orElse(DEFAULT_PAGE_SIZE);
+		String sortBy = optSortBy.orElse(DEFAULT_PAGE_SORT_BY);
+		EBonsaiStyle bonsaiStyle = optBonsaiStyle.orElse(null);
+		EBonsaiType bonsaiType = optBonsaiType.orElse(null);
+				
+		Page<Bonsai> bonsaisPage = 
+				bonsaiService.findFilteredForGivenUser(
+						userId, bonsaiStyle, bonsaiType, pageNum, pageSize, sortBy);
+		
+		PagedModel<BonsaiModel> bonsaiModelPage = pagedResourceAssembler
+				.toModel(bonsaisPage, bonsaiModelAssembler);
+				
+		return ResponseEntity.ok(bonsaiModelPage);
+	
+	}
+	
 	@GetMapping(path = "/{id}")
 	public ResponseEntity<BonsaiModel> getBonsaiById(@PathVariable("id") Long id) {
 		
-		return bonsaiService.findById(id)
-				.map(bonsaiModelAssembler::toModel)
-				.map(ResponseEntity::ok)
-				.orElse(ResponseEntity.notFound().build());
+		return ResponseEntity.ok(
+				bonsaiModelAssembler.toModel(
+						bonsaiService.findById(id)));
 	}
 
 }

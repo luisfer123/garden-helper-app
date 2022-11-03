@@ -39,6 +39,7 @@ import com.garden.helper.services.UserService;
 @RequestMapping(path = "/api/v1/users")
 public class UserRestController {
 	
+	// Default values
 	private static final int USER_PAGE_NUM = 0;
 	private static final int USER_PAGE_SIZE = 9;
 	private static final String USER_PAGE_SORT_BY = "lastName";

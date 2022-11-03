@@ -64,7 +64,7 @@ public class UserModelAssembler extends RepresentationModelAssemblerSupport<User
 		userModel.setMiddleName(user.getMiddleName());
 		userModel.setLastName(user.getLastName());
 		userModel.setSecondLastName(user.getSecondLastName());
-		// userModel.setProfilePicture(profilePicture);
+		userModel.setProfilePicture(profilePicture);
 		
 		return userModel;
 	}

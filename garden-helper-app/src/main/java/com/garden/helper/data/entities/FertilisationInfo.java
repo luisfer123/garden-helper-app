@@ -1,6 +1,6 @@
 package com.garden.helper.data.entities;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,8 +19,11 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import lombok.Data;
+
+@Data
 @Entity
-@Table(name = "Fertilized_info")
+@Table(name = "Fertilisation_info")
 public class FertilisationInfo {
 	
 	@Id
@@ -28,10 +31,10 @@ public class FertilisationInfo {
 	@GenericGenerator(name = "native", strategy = "native")
 	private Long id;
 	
-	@Column(name = "date")
-	private Date date;
+	@Column(name = "fertilized_at")
+	private Timestamp fertilizedAt;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "plant_id")
 	private Plant plant;
 	
@@ -52,30 +55,6 @@ public class FertilisationInfo {
 		fertilizer.getFertilisationInfos().remove(this);
 	}
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Date getDate() {
-		return date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
-	}
-
-	public Set<Fertilizer> getFertilizers() {
-		return fertilizers;
-	}
-
-	public void setFertilizers(Set<Fertilizer> fertilizers) {
-		this.fertilizers = fertilizers;
-	}
-	
 	@Override
 	public boolean equals(Object o) {
 		if(o == this)

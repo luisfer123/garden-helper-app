@@ -49,18 +49,18 @@ public class Plant {
 			mappedBy = "plant",
 			cascade = CascadeType.ALL,
 			orphanRemoval = true)
-	private Set<RepotedDate> repotedDates = new HashSet<>();
+	private Set<RepottingInfo> repottingInfos = new HashSet<>();
 	
 	@ManyToOne
 	@JoinFormula(
 			"(" +
-				"SELECT rd.id " +
-				"FROM Repoted_date rd " +
-				"WHERE rd.plant_id = id " +
-				"ORDER BY rd.date DESC " +
+				"SELECT ri.id " +
+				"FROM Repotting_info ri " +
+				"WHERE ri.plant_id = id " +
+				"ORDER BY ri.repoted_at DESC " +
 				"LIMIT 1" +
 			")")
-	private RepotedDate lastRepotedDate;
+	private RepottingInfo latestRepottingInfo;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "User_id")
@@ -74,6 +74,16 @@ public class Plant {
 
 	public Plant() {
 		super();
+	}
+	
+	public void addRepottingInfo(RepottingInfo info) {
+		this.repottingInfos.add(info);
+		info.setPlant(this);
+	}
+	
+	public void removeRepottingInfo(RepottingInfo info) {
+		this.repottingInfos.remove(info);
+		info.setPlant(null);
 	}
 
 	public Long getId() {
@@ -90,14 +100,6 @@ public class Plant {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-	
-	public Set<RepotedDate> getRepotedDates() {
-		return repotedDates;
-	}
-
-	public void setRepotedDates(Set<RepotedDate> repotedDates) {
-		this.repotedDates = repotedDates;
 	}
 
 	public User getUser() {
@@ -126,6 +128,30 @@ public class Plant {
 
 	public Timestamp getLastUpdatedAt() {
 		return lastUpdatedAt;
+	}
+
+	public Set<RepottingInfo> getRepottingInfos() {
+		return repottingInfos;
+	}
+
+	public void setRepottingInfos(Set<RepottingInfo> repottingInfos) {
+		this.repottingInfos = repottingInfos;
+	}
+
+	public RepottingInfo getLatestRepottingInfo() {
+		return latestRepottingInfo;
+	}
+
+	public void setLatestRepottingInfo(RepottingInfo latestRepottingInfo) {
+		this.latestRepottingInfo = latestRepottingInfo;
+	}
+
+	public Set<FertilisationInfo> getFertilisationInfos() {
+		return fertilisationInfos;
+	}
+
+	public void setFertilisationInfos(Set<FertilisationInfo> fertilisationInfos) {
+		this.fertilisationInfos = fertilisationInfos;
 	}
 
 	public void setLastUpdatedAt(Timestamp lastUpdatedAt) {

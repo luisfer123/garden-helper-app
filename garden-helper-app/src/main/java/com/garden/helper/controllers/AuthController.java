@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -40,6 +42,8 @@ import com.garden.helper.security.UserDetailsImpl;
 @RestController
 @RequestMapping(path = "/api/v1/auth")
 public class AuthController {
+	
+	private static final Logger log = LoggerFactory.getLogger(AuthController.class);
 	
 	// recommended value 1800
 	private static final int COOKIE_MAX_AGE = 1800;
@@ -83,6 +87,8 @@ public class AuthController {
 				.stream()
 				.map(item -> item.getAuthority())
 				.collect(Collectors.toList());
+		
+		log.info("User " + userDetails.getUsername() + " logged in successfully");
 		
 		return ResponseEntity.ok(
 				new LoginResponse(
@@ -136,6 +142,8 @@ public class AuthController {
 		user.setAuthorities(authorities);
 		userRepo.save(user);
 		
+		log.info("New User, with username " + user.getUsername() + ", registered successfully");
+		
 		return ResponseEntity.ok(
 				new MessageResponse("User registered successfully!"));
 		
@@ -144,9 +152,27 @@ public class AuthController {
 	@GetMapping(path = "/logout")
 	public ResponseEntity<MessageResponse> logout(HttpServletResponse response) {
 		
+		UserDetailsImpl principal = null;
+
+		/*
+		 *  When session/token expired, logout is called but Principal object is not
+		 *  longer a UserDetailsImpl, anonymousUser is placed instead in the Authentication
+		 *  object. In such case. logging is not perform here. It can be done in the
+		 *  Authentication JWT Filter.
+		 */
+		if(SecurityContextHolder.getContext().getAuthentication().getPrincipal().getClass() == UserDetailsImpl.class) {
+			principal = 
+					(UserDetailsImpl) SecurityContextHolder
+					.getContext().getAuthentication().getPrincipal();
+		}
+		
+		//Actual log out process
 		Cookie cookie = JwtUtils.createJwtCookie(0, null);
 		response.addCookie(cookie);
 		SecurityContextHolder.getContext().setAuthentication(null);
+		
+		if(principal != null)
+			log.info("User " + principal.getUsername() + " logged out successfully");
 		
 		return ResponseEntity.ok(new MessageResponse("User logged out successfully!"));
 	}
